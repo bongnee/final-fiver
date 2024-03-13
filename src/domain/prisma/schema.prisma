@@ -1,0 +1,88 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model binh_luan {
+  id             Int         @id @default(autoincrement())
+  id_cong_viec   Int?
+  id_nguoi_dung  Int?
+  ngay_binh_luan DateTime?   @db.DateTime(0)
+  noi_dung       String?     @db.Text
+  sao_binh_luan  String?     @db.VarChar(10)
+  cong_viec      cong_viec?  @relation(fields: [id_cong_viec], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "binh_luan_ibfk_1")
+  nguoi_dung     nguoi_dung? @relation(fields: [id_nguoi_dung], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "binh_luan_ibfk_2")
+
+  @@index([id_cong_viec], map: "id_cong_viec")
+  @@index([id_nguoi_dung], map: "id_nguoi_dung")
+}
+
+model chi_tiet_loai_cong_viec {
+  id             Int             @id @default(autoincrement())
+  ten_chi_tiet   String?         @db.VarChar(255)
+  hinh_anh       String?         @db.Text
+  id_loai        Int?
+  loai_cong_viec loai_cong_viec? @relation(fields: [id_loai], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "chi_tiet_loai_cong_viec_ibfk_1")
+  cong_viec      cong_viec[]
+
+  @@index([id_loai], map: "id_loai")
+}
+
+model cong_viec {
+  id                      Int                      @id @default(autoincrement())
+  ten_cong_viec           String?                  @db.VarChar(255)
+  danh_gia                Int?
+  gia_tien                Decimal?                 @db.Decimal(10, 2)
+  hinh_anh                String?                  @db.Text
+  mo_ta                   String?                  @db.Text
+  mo_ta_ngan              String?                  @db.Text
+  sao_cong_viec           Int?
+  id_loai_cong_viec       Int?
+  id_nguoi_dung           Int?
+  binh_luan               binh_luan[]
+  nguoi_dung              nguoi_dung?              @relation(fields: [id_nguoi_dung], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "cong_viec_ibfk_1")
+  chi_tiet_loai_cong_viec chi_tiet_loai_cong_viec? @relation(fields: [id_loai_cong_viec], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_cong_viec_ma_chi_tiet_loai")
+  thue_cong_viec          thue_cong_viec[]
+
+  @@index([id_loai_cong_viec], map: "fk_cong_viec_ma_chi_tiet_loai")
+  @@index([id_nguoi_dung], map: "id_nguoi_dung")
+}
+
+model loai_cong_viec {
+  id                      Int                       @id @default(autoincrement())
+  ten_loai                String?                   @db.VarChar(255)
+  chi_tiet_loai_cong_viec chi_tiet_loai_cong_viec[]
+}
+
+model nguoi_dung {
+  id             Int              @id @default(autoincrement())
+  ten            String?          @db.VarChar(255)
+  email          String           @db.VarChar(255)
+  password       String           @db.Text
+  dien_thoai     String?          @db.VarChar(45)
+  ngay_sinh      DateTime?        @db.DateTime(0)
+  gioi_tinh      String?          @db.VarChar(10)
+  role           String           @default("user") @db.VarChar(20)
+  ky_nang        String?          @db.VarChar(255)
+  chung_chi      String?          @db.Text
+  binh_luan      binh_luan[]
+  cong_viec      cong_viec[]
+  thue_cong_viec thue_cong_viec[]
+}
+
+model thue_cong_viec {
+  id            Int         @id @default(autoincrement())
+  id_cong_viec  Int?
+  id_nguoi_thue Int?
+  ngay_thue     DateTime?   @db.DateTime(0)
+  hoan_thanh    Boolean?
+  cong_viec     cong_viec?  @relation(fields: [id_cong_viec], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "thue_cong_viec_ibfk_1")
+  nguoi_dung    nguoi_dung? @relation(fields: [id_nguoi_thue], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "thue_cong_viec_ibfk_2")
+
+  @@index([id_cong_viec], map: "id_cong_viec")
+  @@index([id_nguoi_thue], map: "id_nguoi_thue")
+}
