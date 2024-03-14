@@ -1,8 +1,8 @@
 Phân chia task:
 <br>
-Minh Thư: Phim + rạp
+Minh Thư: auth + bình luận + chi tiết loại công việc + công việc
 <br>
-Thanh Bình: Người dùng + đặt vé 
+Thanh Bình: loại công việc + người dùng + skill + thue công việc 
 
 
 <p align="center">
