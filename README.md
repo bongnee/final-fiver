@@ -1,5 +1,6 @@
 Phân chia task:
 Minh Thư: Phim + rạp
+<br>
 Thanh Bình: Người dùng + đặt vé 
 
 
